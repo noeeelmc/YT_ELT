@@ -40,5 +40,46 @@ def get_playlist_id():
     except requests.exceptions.RequestException as e:
         raise e
 
+
+# Una vez se dispone del identificador de la Playlist, hay que acceder a los elementos de ella (playlistitems en la referencia a la API).
+
+maxResults = 50 # número máximo de elementos que se devuelven por 'set'.
+
+def get_video_ids(playlistId):
+    
+    '''Esta función recorre los diferentes elementos de la playlist, obteniendo los IDS de los vídeos. Una vez 
+    obtiene los vídeos de una página, pasa a la siguiente, así hasta obtener todos los vídeos del canal'''
+    
+    video_ids = []
+    
+    base_url = f"https://youtube.googleapis.com/youtube/v3/playlistItems?part=contentDetails&maxResults={maxResults}&playlistId={playlistId}&key={API_KEY}"
+    
+    pageToken = None
+    
+    while True:
+        
+        url = base_url
+        
+        if pageToken: 
+            url += f"&pageToken={pageToken}"
+        
+        response = requests.get(url)
+
+        response.raise_for_status()
+
+        data = response.json()
+        
+        for item in data.get("items", []):
+            video_id = item["contentDetails"]["videoId"]
+            video_ids.append(video_id)
+        
+        pageToken = data.get("nextPageToken")
+        
+        if not pageToken:
+            break 
+        
+    return video_ids
+
 if __name__ == "__main__":
-    get_playlist_id()
+    playlist_id = get_playlist_id()
+    print(get_video_ids(playlist_id))
