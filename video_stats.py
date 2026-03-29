@@ -3,6 +3,7 @@ import json
 
 import os 
 from dotenv import load_dotenv
+from datetime import date
 
 
 # Se hace a una petición a la URL asociada al canal buscado. La API_KEY se obtuvo desde Google Cloud
@@ -87,7 +88,7 @@ def get_video_ids(playlistId):
         
 
 def extract_video_data(video_ids):
-    
+    '''Función que facilita los datos de los diferentes vídeos del canal'''
     extracted_data = [] 
     
     def batch_list(video_id_lst, batch_size):
@@ -129,9 +130,15 @@ def extract_video_data(video_ids):
     except requests.exceptions.RequestException as e:
         raise e
     
+def save_to_json(extracted_data):
+    '''Esta función permite guardar los datos obtenidos en .json correspondientes al día de ejecución, con los datos de los vídeos disponibled hasta ese momento'''
+    file_path = f"./data/YT_data_{date.today()}"
     
+    with open(file_path, "w", encoding="utf-8") as json_outfile:  # la w indica que es escritura
+        json.dump(extracted_data, json_outfile, indent=4, ensure_ascii=False) # convierte los datos a json y los guarda en el fichero
 
 if __name__ == "__main__":
     playlist_id = get_playlist_id()
     video_ids = get_video_ids(playlist_id)
-    print(extract_video_data(video_ids))
+    video_data = extract_video_data(video_ids)
+    save_to_json(video_data)
