@@ -1,19 +1,23 @@
 import requests 
 import json
-
-import os 
-from dotenv import load_dotenv
 from datetime import date
 
+# import os 
+# from dotenv import load_dotenv
+# load_dotenv(dotenv_path="./.env")
+
+from airflow.decorators import task
+from airflow.models import Variable
 
 # Se hace a una petición a la URL asociada al canal buscado. La API_KEY se obtuvo desde Google Cloud
 # El canal es el @. Y la URL se extrae de la Referencia de la API de Youtube.
 
-load_dotenv(dotenv_path="./.env")
 
-API_KEY = os.getenv("API_KEY")
-CHANNEL_HANDLE = "IbaiLlanos"
 
+API_KEY = Variable.get("API_KEY")
+CHANNEL_HANDLE = Variable.get("CHANNEL_HANDLE")
+
+@task
 def get_playlist_id():
     
     try:
@@ -46,6 +50,7 @@ def get_playlist_id():
 
 maxResults = 50 # número máximo de elementos que se devuelven por 'set'.
 
+@task
 def get_video_ids(playlistId):
     
     '''Esta función recorre los diferentes elementos de la playlist, obteniendo los IDS de los vídeos. Una vez 
@@ -87,6 +92,7 @@ def get_video_ids(playlistId):
             raise e
         
 
+@task
 def extract_video_data(video_ids):
     '''Función que facilita los datos de los diferentes vídeos del canal'''
     extracted_data = [] 
@@ -129,7 +135,8 @@ def extract_video_data(video_ids):
             
     except requests.exceptions.RequestException as e:
         raise e
-    
+ 
+@task   
 def save_to_json(extracted_data):
     '''Esta función permite guardar los datos obtenidos en .json correspondientes al día de ejecución, con los datos de los vídeos disponibled hasta ese momento'''
     file_path = f"./data/YT_data_{date.today()}"
