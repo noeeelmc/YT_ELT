@@ -120,7 +120,7 @@ def extract_video_data(video_ids):
                 statistics = item["statistics"]
                 
                 video_data = {
-                    "video": video_id, 
+                    "video_id": video_id, 
                     "publishedAt": snippet["publishedAt"],
                     "title": snippet["title"],
                     "duration": contentDetails["duration"],

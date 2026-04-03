@@ -78,6 +78,7 @@ def delete_rows(cur, conn, schema, ids_to_delete):
     try:
         
         ids_to_delete = ", ".join(f"'{video_id}'" for video_id in ids_to_delete)
+        
         cur.execute(
             f"""
             DELETE FROM {schema}.{table}
