@@ -1,0 +1,83 @@
+from airflow.providers.postgres.hooks.postgres import PostgresHook
+from psycopg2.extras import RealDictCursor
+
+table = "yt_elt"
+
+def get_conn_cursor():
+    """Get a connection cursor to the Postgres database using Airflow's PostgresHook."""
+    # Create a PostgresHook instance
+    hook = PostgresHook(postgres_conn_id='postgres_db_yt_elt', database='elt_db') # database, in .yaml 
+                            
+    # Get a connection and create a cursor
+    conn = hook.get_conn()
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
+    
+    return conn, cursor 
+
+
+def close_conn_cursor(conn, cursor):
+    conn.close()
+    cursor.close()
+    
+    
+def create_schema(schema):
+    conn, cur = get_conn_cursor()
+    
+    schema_sql = f"CREATE SCHEMA IF NOT EXISTS {schema};" 
+    
+    cur.execute(schema_sql)
+    
+    conn.commit()
+    
+    close_conn_cursor(conn, cur)
+    
+    
+def create_table(schema):
+    
+    conn, cur = get_conn_cursor()
+    
+    if schema == "staging":
+        
+        table_sql = f"""
+        CREATE TABLE IF NOT EXISTS {schema}.{table} (
+            Video_ID VARCHAR(11) PRIMARY KEY NOT NULL,
+            Video_Title TEXT NOT NULL,
+            Upload_Date TIMESTAMP NOT NULL,
+            Duration TIME NOT NULL,
+            Video_Type VARCHAR(10) NOT NULL,
+            Video_Views INT,
+            Likes_Count INT,
+            Comments_Count INT
+        );
+        """
+    
+    else:
+        
+        table_sql = f"""
+        CREATE TABLE IF NOT EXISTS {schema}.{table} (
+            Video_ID VARCHAR(11) PRIMARY KEY NOT NULL,
+            Video_Title TEXT NOT NULL,
+            Upload_Date TIMESTAMP NOT NULL,
+            Duration TIME NOT NULL,
+            Video_Type VARCHAR(10) NOT NULL,
+            Video_Views INT,
+            Likes_Count INT,
+            Comments_Count INT
+        );
+        """
+    
+    cur.execute(table_sql)
+    
+    conn.commit()
+    
+    close_conn_cursor(conn, cur)
+    
+
+def get_video_ids(cur, schema):
+    
+    cur.execute(f"""SELECT "Video_ID" FROM {schema}.{table};""")
+    ids = cur.fetchall()
+    
+    video_ids = [row["Video_ID"] for row in ids]
+
+    return video_ids
