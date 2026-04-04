@@ -4,12 +4,12 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-def load_path():
+def load_data():
     
     file_path = f"./data/YT_data_{date.today()}.json"
     
     try: 
-        logger.info("Processing file: YT_data_{date.today()}")
+        logger.info(f"Processing file: YT_data_{date.today()}")
         
         with open(file_path, "r", encoding="utf-8") as raw_data: # la r indica que es lectura
             data = json.load(raw_data) # carga los datos del fichero json
