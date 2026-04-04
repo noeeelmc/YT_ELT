@@ -33,12 +33,12 @@ def staging_table():
                 insert_rows(cur, conn, schema, row)
             
             else: 
-                if row["video_id"]  in table_ids:
+                if row["video_id"] in table_ids:
                     update_rows(cur, conn, schema, row)
                 else:            
                     insert_rows(cur, conn, schema, row)
                     
-        ids_in_json = [row["video_id"] for row in YT_data]
+        ids_in_json = {row["video_id"] for row in YT_data}
         
         ids_to_delete = set(table_ids) - ids_in_json
         
@@ -56,7 +56,7 @@ def staging_table():
             close_conn_cursor(conn, cur)
             
 @task
-def dwh_table():
+def core_table():
     
     schema = 'core'
     
@@ -72,7 +72,7 @@ def dwh_table():
         
         current_video_ids = set()
         
-        cur.execute(f"""SELECT * FROM staging.{table};""")
+        cur.execute(f"SELECT * FROM staging.{table};")
         rows = cur.fetchall()
         
         for row in rows: 
@@ -80,11 +80,11 @@ def dwh_table():
             current_video_ids.add(row["Video_ID"])
             
             if len(table_ids) == 0:
-                transformed_row = transform_data(cur, conn, schema, row)
+                transformed_row = transform_data(row)
                 insert_rows(cur, conn, schema, transformed_row)
                 
             else:  
-                transformed_row = transform_data(cur, conn, schema, row)
+                transformed_row = transform_data(row)
                 
                 if transformed_row["Video_ID"] in table_ids:
                     update_rows(cur, conn, schema, transformed_row)
@@ -92,12 +92,12 @@ def dwh_table():
                 else: 
                     insert_rows(cur, conn, schema, transformed_row)
             
-            ids_to_delete = set(table_ids) - current_video_ids
+        ids_to_delete = set(table_ids) - current_video_ids
             
-            if ids_to_delete:
+        if ids_to_delete:
                 delete_rows(cur, conn, schema, ids_to_delete)
                 
-            logger.info(f"{schema} table update completed.")                  
+        logger.info(f"{schema} table update completed.")                  
     
     except Exception as e:
         logger.error(f"Error in {schema} table update: {e}")

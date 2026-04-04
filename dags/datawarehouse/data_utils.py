@@ -1,7 +1,7 @@
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 from psycopg2.extras import RealDictCursor
 
-table = "yt_elt"
+table = "yt_api"
 
 def get_conn_cursor():
     """Get a connection cursor to the Postgres database using Airflow's PostgresHook."""
@@ -40,14 +40,14 @@ def create_table(schema):
         
         table_sql = f"""
         CREATE TABLE IF NOT EXISTS {schema}.{table} (
-            Video_ID VARCHAR(11) PRIMARY KEY NOT NULL,
-            Video_Title TEXT NOT NULL,
-            Upload_Date TIMESTAMP NOT NULL,
-            Duration TIME NOT NULL,
-            Video_Type VARCHAR(10) NOT NULL,
-            Video_Views INT,
-            Likes_Count INT,
-            Comments_Count INT
+            "Video_ID" VARCHAR(11) PRIMARY KEY NOT NULL,
+            "Video_Title" TEXT NOT NULL,
+            "Upload_Date" TIMESTAMP NOT NULL,
+            "Duration" TIME NOT NULL,
+            "Video_Type" VARCHAR(10) NOT NULL,
+            "Video_Views" INT,
+            "Likes_Count" INT,
+            "Comments_Count" INT
         );
         """
     
@@ -55,14 +55,14 @@ def create_table(schema):
         
         table_sql = f"""
         CREATE TABLE IF NOT EXISTS {schema}.{table} (
-            Video_ID VARCHAR(11) PRIMARY KEY NOT NULL,
-            Video_Title TEXT NOT NULL,
-            Upload_Date TIMESTAMP NOT NULL,
-            Duration TIME NOT NULL,
-            Video_Type VARCHAR(10) NOT NULL,
-            Video_Views INT,
-            Likes_Count INT,
-            Comments_Count INT
+            "Video_ID" VARCHAR(11) PRIMARY KEY NOT NULL,
+            "Video_Title" TEXT NOT NULL,
+            "Upload_Date" TIMESTAMP NOT NULL,
+            "Duration" TIME NOT NULL,
+            "Video_Type" VARCHAR(10) NOT NULL,
+            "Video_Views" INT,
+            "Likes_Count" INT,
+            "Comments_Count" INT
         );
         """
     

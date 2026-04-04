@@ -139,7 +139,7 @@ def extract_video_data(video_ids):
 @task   
 def save_to_json(extracted_data):
     '''Esta función permite guardar los datos obtenidos en .json correspondientes al día de ejecución, con los datos de los vídeos disponibled hasta ese momento'''
-    file_path = f"./data/YT_data_{date.today()}"
+    file_path = f"./data/YT_data_{date.today()}.json"
     
     with open(file_path, "w", encoding="utf-8") as json_outfile:  # la w indica que es escritura
         json.dump(extracted_data, json_outfile, indent=4, ensure_ascii=False) # convierte los datos a json y los guarda en el fichero
