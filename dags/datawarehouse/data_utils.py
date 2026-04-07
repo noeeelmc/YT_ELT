@@ -6,7 +6,7 @@ table = "yt_api"
 def get_conn_cursor():
     """Get a connection cursor to the Postgres database using Airflow's PostgresHook."""
     # Create a PostgresHook instance
-    hook = PostgresHook(postgres_conn_id='postgres_db_yt_elt', database='elt_db') # database, in .yaml 
+    hook = PostgresHook(postgres_conn_id="postgres_db_yt_elt", database="elt_db") # database, in .yaml 
                             
     # Get a connection and create a cursor
     conn = hook.get_conn()
@@ -15,11 +15,11 @@ def get_conn_cursor():
     return conn, cursor 
 
 
-def close_conn_cursor(conn, cursor):
-    conn.close()
+def close_conn_cursor(conn, cursor): 
     cursor.close()
+    conn.close()
     
-    
+
 def create_schema(schema):
     conn, cur = get_conn_cursor()
     
@@ -44,7 +44,6 @@ def create_table(schema):
             "Video_Title" TEXT NOT NULL,
             "Upload_Date" TIMESTAMP NOT NULL,
             "Duration" TIME NOT NULL,
-            "Video_Type" VARCHAR(10) NOT NULL,
             "Video_Views" INT,
             "Likes_Count" INT,
             "Comments_Count" INT
