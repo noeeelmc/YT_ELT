@@ -13,7 +13,7 @@ table = "yt_api"
 @task 
 def staging_table():
     
-    schema = 'staging'
+    schema = "staging"
     
     conn, cur = None, None
     
@@ -58,7 +58,7 @@ def staging_table():
 @task
 def core_table():
     
-    schema = 'core'
+    schema = "core"
     
     conn, cur = None, None
     
