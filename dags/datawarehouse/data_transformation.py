@@ -14,6 +14,7 @@ def parse_duration(duration_str):
         if component in duration_str:
             value = duration_str.split(component)[0]
             values[component] = int(value)
+            duration_str = duration_str.split(component, 1)[1]  
             
     total_duration = timedelta(days=values["D"], hours=values["H"], minutes=values["M"], seconds=values["S"])
     

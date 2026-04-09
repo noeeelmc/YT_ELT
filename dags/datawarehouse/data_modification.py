@@ -39,38 +39,38 @@ def update_rows(cur,conn,schema,row):
     """For updating changing columns in the dimension table, in this case the video title, views, likes and comments count"""
     try: 
         if schema == "staging":
+            cur.execute(
+                f"""
+                UPDATE {schema}.{table}
+                SET "Video_Title" = %(title)s,
+                    "Video_Views" = %(viewCount)s,
+                    "Likes_Count" = %(likeCount)s,
+                    "Comments_Count" = %(commentCount)s
+                WHERE "Video_ID" = %(video_id)s;
+                """, row
+            )
             video_id="video_id"
-            upload_date="publishedAt"
-            video_title="title"
-            video_views="viewCount"
-            likes_count="likeCount"
-            comments_count="commentCount"
         
         else: 
+            cur.execute(
+                f"""
+                UPDATE {schema}.{table}
+                SET "Video_Title" = %(Video_Title)s,
+                    "Video_Views" = %(Video_Views)s,
+                    "Likes_Count" = %(Likes_Count)s,
+                    "Comments_Count" = %(Comments_Count)s,
+                    "Video_Type" = %(Video_Type)s
+                WHERE "Video_ID" = %(Video_ID)s;
+                """, row
+            )
             video_id="Video_ID"
-            upload_date="Upload_Date"
-            video_title="Video_Title"
-            video_views="Video_Views"
-            likes_count="Likes_Count"
-            comments_count="Comments_Count"
-            
-        cur.execute(
-            f"""
-            UPDATE {schema}.{table}
-            SET "Video_Title" = %({video_title})s,
-                "Video_Views" = %({video_views})s,
-                "Likes_Count" = %({likes_count})s,
-                "Comments_Count" = %({comments_count})s
-            WHERE "Video_ID" = %({video_id})s AND "Upload_Date" = %({upload_date})s;
-            """, row
-        ) 
             
         conn.commit()
             
         logger.info(f"Updated row with video ID: {row[video_id]}")
     
     except Exception as e:
-        logger.info(f"Error updating row with video ID: {row[video_id]} - {e}")
+        logger.error(f"Error updating row with video ID: {row.get(video_id, 'unknown')} - {e}")
         raise e
 
 def delete_rows(cur, conn, schema, ids_to_delete):
