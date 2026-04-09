@@ -28,10 +28,10 @@ def insert_rows(cur, conn, schema, row):
             
         conn.commit()
         
-        logger.info(f"Inserted row with Video_ID: {row[video_id]}")
+        logger.info(f"Inserted row with video ID: {row[video_id]}")
         
     except Exception as e:
-        logger.error(f"Error inserting row with Video_ID: {row[video_id]}")
+        logger.error(f"Error inserting row with video ID: {row[video_id]}")
         raise e
     
 
@@ -45,7 +45,7 @@ def update_rows(cur,conn,schema,row):
             video_views="viewCount"
             likes_count="likeCount"
             comments_count="commentCount"
-        # core
+        
         else: 
             video_id="Video_ID"
             upload_date="Upload_Date"
@@ -55,42 +55,42 @@ def update_rows(cur,conn,schema,row):
             comments_count="Comments_Count"
             
         cur.execute(
-                f"""
-                UPDATE {schema}.{table}
-                SET "Video_Title" = %({video_title})s,
-                    "Video_Views" = %({video_views})s,
-                    "Likes_Count" = %({likes_count})s,
-                    "Comments_Count" = %({comments_count})s
-                WHERE "Video_ID" = %({video_id})s AND "Upload_Date" = %({upload_date})s;
-                """, row
-            ) 
+            f"""
+            UPDATE {schema}.{table}
+            SET "Video_Title" = %({video_title})s,
+                "Video_Views" = %({video_views})s,
+                "Likes_Count" = %({likes_count})s,
+                "Comments_Count" = %({comments_count})s
+            WHERE "Video_ID" = %({video_id})s AND "Upload_Date" = %({upload_date})s;
+            """, row
+        ) 
             
         conn.commit()
             
-        logger.info(f"Updated row with Video_ID: {row[video_id]}")
+        logger.info(f"Updated row with video ID: {row[video_id]}")
     
     except Exception as e:
-        logger.info(f"Error updating row with Video_ID: {row[video_id]} - {e}")
+        logger.info(f"Error updating row with video ID: {row[video_id]} - {e}")
         raise e
 
 def delete_rows(cur, conn, schema, ids_to_delete):
     
     try:
         
-        ids_to_delete = f"""({', '.join(f"'{id}'" for id in ids_to_delete)})"""
+        ids_to_delete = ", ".join(f"'{video_id}'" for video_id in ids_to_delete)
         
         cur.execute(
             f"""
             DELETE FROM {schema}.{table}
-            WHERE "Video_ID" IN {ids_to_delete};
+            WHERE "Video_ID" IN ({ids_to_delete});
             """
         )
         
         conn.commit()            
-        logger.info(f"Deleted rows with Video_IDs: {ids_to_delete}")
+        logger.info(f"Deleted rows with video IDs: {ids_to_delete}")
     
     except Exception as e:
-        logger.info(f"Error deleting rows with Video_IDs: {ids_to_delete} - {e}")
+        logger.info(f"Error deleting rows with video IDs: {ids_to_delete} - {e}")
         raise e
 
     
