@@ -36,12 +36,10 @@ def create_table(schema):
     
     conn, cur = get_conn_cursor()
     
-    cur.execute(f"DROP TABLE IF EXISTS {schema}.{table};")
-    
     if schema == "staging":
         
         table_sql = f"""
-        CREATE TABLE {schema}.{table} (
+        CREATE TABLE IF NOT EXISTS {schema}.{table} (
             "Video_ID" VARCHAR(11) PRIMARY KEY NOT NULL,
             "Video_Title" TEXT NOT NULL,
             "Upload_Date" TIMESTAMP NOT NULL,
@@ -55,7 +53,7 @@ def create_table(schema):
     else:
         
         table_sql = f"""
-        CREATE TABLE {schema}.{table} (
+        CREATE TABLE IF NOT EXISTS {schema}.{table} (
             "Video_ID" VARCHAR(11) PRIMARY KEY NOT NULL,
             "Video_Title" TEXT NOT NULL,
             "Upload_Date" TIMESTAMP NOT NULL,
