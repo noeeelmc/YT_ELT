@@ -84,8 +84,8 @@ with DAG(
     dag_id="data_quality",
     default_args=default_args,
     description="DAG to check the data quality on both layers in the db",
-    schedule="0 14 * * *", # execution at 1:00 PM every day
     catchup=False,
+    schedule=None,
 ) as dag_update:
 
     # Define tasks
